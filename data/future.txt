@@ -1,0 +1,11 @@
+FutureBuilder<Map<String, List<Recarga>>>(
+                future: recargas,
+                  builder: (context, snap) {
+                if (snap.hasData) {
+                  return _lista(snap.data!);
+                }
+                if (snap.hasError) {
+                  return const Text("Ups ha habido un error");
+                }
+                return const CircularProgressIndicator();
+              })
