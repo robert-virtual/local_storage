@@ -220,7 +220,7 @@ class _PaquetesPageState extends State<PaquetesPage> {
   void enviar() async {
     final input = TextEditingController();
     final pref = await SharedPreferences.getInstance();
-    final pin = pref.getString('pin');
+    String? pin = pref.getString('pin');
     if (pin == null) {
       final res = await showDialog(
           context: context,
@@ -233,6 +233,7 @@ class _PaquetesPageState extends State<PaquetesPage> {
                   const Text(
                       "El pin no se le volvera a solicitar se guardara en el dispositivo"),
                   TextField(
+                    keyboardType: TextInputType.number,
                     controller: input,
                     decoration: InputDecoration(hintText: "Pin"),
                   )
@@ -240,11 +241,15 @@ class _PaquetesPageState extends State<PaquetesPage> {
               ),
               actions: [
                 TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                }, child: const Text("Cancelar")),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text("Cancelar")),
                 TextButton(
                     onPressed: () {
+                      pref.setString('pin', input.text);
+                      pin = input.text;
+                      Navigator.of(context).pop();
                     },
                     child: const Text("Guardar")),
               ],
@@ -252,6 +257,6 @@ class _PaquetesPageState extends State<PaquetesPage> {
           });
     }
     bool? res = await FlutterPhoneDirectCaller.callNumber(
-        "*444*${seleccionado!.cod}*${pin}#");
+        "*444*${seleccionado!.cod}*$pin#");
   }
 }
